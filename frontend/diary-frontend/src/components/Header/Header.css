@@ -1,0 +1,26 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; 
+}
+
+.navbar h1 {
+  display: flex;
+  margin: 0;
+  color: white;
+}
+
+.navbar p {
+  margin: 0;
+  color: white;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.login-and-registration{
+  display: flex;
+  gap: 14px
+}
