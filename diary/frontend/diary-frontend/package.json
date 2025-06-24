@@ -1,0 +1,33 @@
+{
+  "name": "using-pre-built-react-components-completed",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "main": "src/index.js",
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.1.2",
+    "@mui/material": "^7.1.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "uuid": "3.3.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.6.0",
+    "typescript": "3.3.3",
+    "vite": "^7.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
