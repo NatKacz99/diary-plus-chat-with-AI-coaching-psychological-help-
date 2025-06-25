@@ -51,6 +51,14 @@ button:hover{
   color: green
 }
 
+.sign-up-with-google{
+  text-align: center;
+}
+
 a{
   text-decoration: none;
+}
+
+i{
+  margin-right: 8px;
 }

@@ -76,6 +76,13 @@ function SignUp() {
           <p className="alert-success">You can now <Link to="/login">sign in to your account</Link>.</p>
         </>
       )}
+
+      <div className="sign-up-with-google">
+        <a href="http://localhost:3000/auth/google" role="button">
+          <i className="fab fa-google"></i>
+          Sign Up with Google
+        </a>
+      </div>
     </div>
   )
 }
