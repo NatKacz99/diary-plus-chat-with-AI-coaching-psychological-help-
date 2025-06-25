@@ -3,9 +3,12 @@ import Header from "./../Header/Header";
 import Footer from "./../Footer/Footer";
 import Note from "./../Note/Note";
 import CreateArea from "./../CreateArea/CreateArea";
+import SignUp from "./../SignUp/SignUp";
+import { Route, Routes, useLocation } from 'react-router-dom';
 
 function App() {
   const [notes, setNotes] = useState([]);
+  const location = useLocation();
 
   function addNote(newNote) {
     setNotes(prevNotes => {
@@ -24,19 +27,25 @@ function App() {
   return (
     <div>
       <Header />
-      <CreateArea onAdd={addNote} />
-      {notes.map((noteItem, index) => {
-        return (
-          <Note
-            key={index}
-            id={index}
-            title={noteItem.title}
-            content={noteItem.content}
-            onDelete={deleteNote}
-          />
-        );
-      })}
+      {location.pathname === "/" && (
+        <>
+          <CreateArea onAdd={addNote} />
+          {notes.map((noteItem, index) => (
+            <Note
+              key={index}
+              id={index}
+              title={noteItem.title}
+              content={noteItem.content}
+              onDelete={deleteNote}
+            />
+          ))}
+        </>
+      )}
+
       <Footer />
+      <Routes>
+        <Route path="/signup" element={<SignUp />} />
+      </Routes>
     </div>
   );
 }
