@@ -4,6 +4,7 @@ import Footer from "./../Footer/Footer";
 import Note from "./../Note/Note";
 import CreateArea from "./../CreateArea/CreateArea";
 import SignUp from "./../SignUp/SignUp";
+import SignIn from "./../SignIn/SignIn";
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
       <Footer />
       <Routes>
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/signin" element={<SignIn />} />
       </Routes>
     </div>
   );

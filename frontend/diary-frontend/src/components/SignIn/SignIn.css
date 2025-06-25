@@ -1,11 +1,11 @@
-.signup-form {
+.signin-form {
   max-width: 400px;
   background: #fff;
   margin: 18px auto;
   border-radius: 5px;
 }
 
-.signup-form .form-row {
+.signin-form .form-row {
   display: grid;
   grid-template-columns: 150px 1fr;
   align-items: center;
@@ -13,22 +13,22 @@
   margin-bottom: 10px;
 }
 
-.signup-form label {
+.signin-form label {
   text-align: right;
 }
 
-.signup-form input {
+.signin-form input {
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 5px;
 }
 
-.signup-form input:focus {
+.signin-form input:focus {
   border: 2px solid #f5ba13;
   outline: none
 }
 
-.signup-form .form-button {
+.signin-form .form-button {
   text-align: center;
   margin-top: 20px;
 }
@@ -52,7 +52,7 @@ button:hover{
   color: green
 }
 
-.sign-up-with-google{
+.sign-in-with-google{
   text-align: center;
 }
 
