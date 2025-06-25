@@ -42,3 +42,15 @@ button{
 button:hover{
   cursor: pointer;
 }
+
+.alert-error{
+  color: red
+}
+
+.alert-success{
+  color: green
+}
+
+a{
+  text-decoration: none;
+}

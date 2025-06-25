@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import "./SignUp.css"
+import "./SignUp.css";
+import { Link } from 'react-router-dom';
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -32,6 +33,7 @@ function SignUp() {
       });
 
       const data = await response.json();
+      console.log(data);
 
       if (response.ok && data.success) {
         setMessage(data.message);
@@ -53,18 +55,27 @@ function SignUp() {
       <form onSubmit={handleSubmit}>
         <div className="form-row">
           <label htmlFor="username">Username</label>
-          <input type="text" id="username" name="username" onChange={handleChange} />
+          <input type="text" id="username" name="username" autoComplete="off" onChange={handleChange} />
         </div>
         <div className="form-row">
           <label htmlFor="password">Password</label>
           <input type="password" id="password" name="password" onChange={handleChange} />
         </div>
         <div className="form-row">
-          <label htmlFor="confirm-password">Confirm password</label>
-          <input type="password" id="confirm-password" name="confirm-password" onChange={handleChange} />
+          <label htmlFor="confirmPassword">Confirm password</label>
+          <input type="password" id="confirm-password" name="confirmPassword" onChange={handleChange} />
         </div>
         <div className="form-button"><button type="submit">Save</button></div>
       </form>
+      {message && messageType !== 'success' && (
+        <p className="alert-error">{message}</p>
+      )}
+      {message && messageType === 'success' && (
+        <>
+          <p className="alert-success">{message}</p> <br />
+          <p className="alert-success">You can now <Link to="/login">sign in to your account</Link>.</p>
+        </>
+      )}
     </div>
   )
 }
