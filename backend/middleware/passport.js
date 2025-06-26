@@ -1,5 +1,6 @@
 import passport from "passport";
 import { Strategy } from "passport-local";
+import GoogleStrategy from "passport-google-oauth2";
 import bcrypt from "bcrypt";
 import db from "./../config/DataBase.js";
 
@@ -32,6 +33,28 @@ passport.use(
     }
   })
 );
+
+passport.use("google", new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: "http://localhost:3000/auth/google/callback",
+  userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
+}, async (accessToken, refreshToken, profile, cb) => {
+  console.log(profile);
+  try {
+    const result = await db.query("SELECT * FROM users WHERE username = $1", [profile.username])
+    if (result.rows.length === 0) {
+      const newUser = await db.query("INSERT INTO USERS (username, password) VALUES($1, $2) RETURNING *",
+        [profile.name, null])
+      cb(null, newUser.rows[0])
+    } else {
+      cb(null, result.rows[0])
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
+))  
 
 passport.serializeUser((user, cb) => {
   cb(null, user.id);

@@ -4,6 +4,14 @@ import db from "./../config/DataBase.js";
 
 const saltRounds = 10;
 
+export const authorizationGoogleScope = passport.authenticate("google", {
+  scope: ["profile", "email"]
+});
+
+export function authGoogleCallback(req, res) {
+  res.redirect("http://localhost:5173/");
+}
+
 export async function signup(req, res) {
   const { username, password, confirmPassword } = req.body;
   console.log(username);
@@ -60,7 +68,7 @@ export async function signin(req, res, next) {
         console.error("Login error:", err);
         return next(err);
       }
-      return res.json({ success: true, user: { id: user.id, email: user.email, name: user.name } });
+      return res.json({ success: true, user: { id: user.id, name: user.name } });
     });
   })(req, res, next);
 }
