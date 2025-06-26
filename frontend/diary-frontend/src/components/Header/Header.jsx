@@ -1,9 +1,20 @@
-import React from "react";
+import React, {useContext} from "react";
 import HighlightIcon from "@mui/icons-material/Highlight";
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../contexts/UserContext";
 import "./Header.css"
 
 function Header() {
+  const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
+
+  const handleLogout = () => {
+    localStorage.clear();  
+    setUser(null);  
+    navigate("/signin");      
+  };
+
   return (
     <header>
       <nav>
@@ -16,13 +27,13 @@ function Header() {
             </div>
             <div className="login-and-registration">
             <div>
-              <Link to="/signup"><p>Sign Up</p></Link>
+              <button className="nav-link-button"><Link to="/signup"><p>Sign Up</p></Link></button>
             </div>
             <div>
-              <Link to="/signin"><p>Sign In</p></Link>
+              <button className="nav-link-button"><Link to="/signin"><p>Sign In</p></Link></button>
             </div>
             <div>
-            <Link to="/sign-out"><p>Sign Out</p></Link>
+            <button onClick={handleLogout} className="nav-link-button">Sign Out</button>
           </div>
           </div>
         </div>

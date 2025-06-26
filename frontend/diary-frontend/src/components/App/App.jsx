@@ -28,26 +28,30 @@ function App() {
   return (
     <div>
       <Header />
-      {location.pathname === "/" && (
-        <>
-          <CreateArea onAdd={addNote} />
-          {notes.map((noteItem, index) => (
-            <Note
-              key={index}
-              id={index}
-              title={noteItem.title}
-              content={noteItem.content}
-              onDelete={deleteNote}
-            />
-          ))}
-        </>
-      )}
 
-      <Footer />
       <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <CreateArea onAdd={addNote} />
+              {notes.map((noteItem, index) => (
+                <Note
+                  key={index}
+                  id={index}
+                  title={noteItem.title}
+                  content={noteItem.content}
+                  onDelete={deleteNote}
+                />
+              ))}
+            </>
+          }
+        />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
       </Routes>
+
+      <Footer />
     </div>
   );
 }
