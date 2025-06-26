@@ -3,7 +3,9 @@ import bodyParser from "body-parser";
 import cors from 'cors';
 import passport from "passport";
 import env from "dotenv";
-import authRoutes from "./routes/auth.routes.js"
+import session from "express-session";
+import "./middleware/passport.js";
+import authRoutes from "./routes/auth.routes.js";
 
 env.config();
 
@@ -17,7 +19,20 @@ app.use(cors({
   credentials: true
 }));
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000
+    }
+  })
+);
+
 app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/", authRoutes);
 

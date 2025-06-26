@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import passport from "passport";
 import db from "./../config/DataBase.js";
 
 const saltRounds = 10;
@@ -41,4 +42,25 @@ export async function signup(req, res) {
     console.error(err.message);
     res.status(500).json({ success: false, message: 'Server error.' });
   }
+}
+
+export async function signin(req, res, next) {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      console.error("Authentication error:", err);
+      return next(err);
+    }
+    if (!user) {
+      console.warn("Authentication failed:", info);
+      return res.status(401).json({ success: false, message: info?.message || "Invalid credentials" });
+    }
+
+    req.logIn(user, (err) => {
+      if (err) {
+        console.error("Login error:", err);
+        return next(err);
+      }
+      return res.json({ success: true, user: { id: user.id, email: user.email, name: user.name } });
+    });
+  })(req, res, next);
 }
