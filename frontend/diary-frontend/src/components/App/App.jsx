@@ -46,11 +46,29 @@ function App() {
   }, [user]);
 
   function deleteNote(id) {
-    setNotes(prevNotes => {
-      return prevNotes.filter((noteItem, index) => {
-        return index !== id;
+    const noteToDelete = notes[id];
+
+    fetch("http://localhost:3000/deleteNote", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        noteId: noteToDelete.id, 
+        userId: user.id
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setNotes(prevNotes => prevNotes.filter((noteItem, index) => id !== index));
+        } else {
+          console.error("The note wasn't delete:", data.message);
+        }
+      })
+      .catch(err => {
+        console.error("Server error:", err);
       });
-    });
   }
 
   return (

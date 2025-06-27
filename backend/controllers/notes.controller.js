@@ -35,3 +35,15 @@ export async function displayUserNotes(req, res) {
     res.status(500).json({ success: false, message: 'Server error' });
   }
 }
+
+export async function deleteNote(req, res) {
+  const { noteId, userId } = req.body;
+
+  try {
+    await db.query('DELETE FROM notes WHERE id = $1 AND user_id = $2 RETURNING *', [noteId, userId]);
+    res.status(200).json({ success: true, message: 'The note was deleted.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+}
