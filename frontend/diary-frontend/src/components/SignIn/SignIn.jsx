@@ -24,9 +24,10 @@ function SignIn({setToken}) {
       const data = await response.json();
 
       if (response.ok && data.success) {
+        localStorage.removeItem("userData");
         localStorage.setItem('userData', JSON.stringify({
           id: data.user.id,
-          name: data.user.name,
+          username: data.user.name,
           email: data.user.email,
           token: data.token
         }));

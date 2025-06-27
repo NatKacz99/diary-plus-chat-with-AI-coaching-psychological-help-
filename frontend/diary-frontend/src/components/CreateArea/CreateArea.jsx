@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { UserContext } from "../../contexts/UserContext"; 
 import AddIcon from "@mui/icons-material/Add";
 import Fab from "@mui/material/Fab";
 import Zoom from "@mui/material/Zoom";
 
 function CreateArea(props) {
+  const { user } = useContext(UserContext);
   const [isExpanded, setExpanded] = useState(false);
 
   const [note, setNote] = useState({
@@ -22,14 +24,43 @@ function CreateArea(props) {
     });
   }
 
-  function submitNote(event) {
-    props.onAdd(note);
-    setNote({
-      title: "",
-      content: ""
+  async function submitNote(event) {
+  event.preventDefault();
+
+  const userData = JSON.parse(localStorage.getItem("userData"));
+  const userId = userData?.id;
+
+  const newNote = {
+    title: note.title,
+    content: note.content,
+    userId: userId
+  };
+
+  try {
+    const response = await fetch("http://localhost:3000/addNote", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(newNote)
     });
-    event.preventDefault();
+
+    const data = await response.json();
+
+    if (data.success) {
+      setNote({ title: "", content: "" });
+
+      if (props.onNoteAdded) {
+        props.onNoteAdded(data.note || newNote);
+      }
+    } else {
+      console.error("Adding note error: ", data.message);
+    }
+  } catch (err) {
+    console.error("Add note error: ", err);
   }
+}
 
   function expand() {
     setExpanded(true);

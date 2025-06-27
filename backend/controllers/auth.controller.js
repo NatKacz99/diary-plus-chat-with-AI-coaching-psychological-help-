@@ -68,7 +68,7 @@ export async function signin(req, res, next) {
         console.error("Login error:", err);
         return next(err);
       }
-      return res.json({ success: true, user: { id: user.id, name: user.name } });
+      return res.json({ success: true, user: { id: user.id, username: user.username } });
     });
   })(req, res, next);
 }
