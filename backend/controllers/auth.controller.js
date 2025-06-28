@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import passport from "passport";
 import db from "./../config/DataBase.js";
+import { sanitizeString } from '../middleware/sanitization.js';
 
 const saltRounds = 10;
 
@@ -13,11 +14,22 @@ export function authGoogleCallback(req, res) {
 }
 
 export async function signup(req, res) {
-  const { username, password, confirmPassword } = req.body;
+  var { username, password, confirmPassword } = req.body;
   console.log(username);
   console.log(password);
   console.log(confirmPassword);
   try {
+    username = sanitizeString(username, 255);
+    password = sanitizeString(password, 255);
+    confirmPassword = sanitizeString(confirmPassword, 255);
+
+    if (username.length > 50) {
+      return res.status(400).json({ 
+        success: false, 
+        message: `Username too long (${username.length} characters). Maximum: 50 characters.` 
+      });
+    }
+
     if (!username || !password || !confirmPassword) {
       return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
@@ -28,6 +40,13 @@ export async function signup(req, res) {
 
     if(password.length < 8){
       return res.status(400).json({ success: false, message: `The password must consist of at least 8 characters`});
+    }
+
+    if (password.length > 100) {
+      return res.status(400).json({ 
+        success: false, 
+        message: `Password too long (${password.length} characters). Maximum: 100 characters.` 
+      });
     }
 
     const checkResultUsername = await db.query("SELECT * FROM users WHERE username = $1", [
