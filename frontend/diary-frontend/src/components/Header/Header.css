@@ -32,5 +32,11 @@
   margin: 0;
   font: inherit;
   cursor: pointer;
+  background-color: #f5ba13;
+  border-radius: 5px;
+}
+
+.nav-link-button:hover{
+  background-color: #e3aa10;
 }
 

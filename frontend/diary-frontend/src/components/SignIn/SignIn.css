@@ -36,13 +36,13 @@
   margin-top: 20px;
 }
 
-button{
+.form-button > button{
   background-color: #f5ba13;
   border-radius: 5px;
   padding: 4px
 }
 
-button:hover{
+.form-button > button:hover{
   cursor: pointer;
   background-color: #e3aa10;
 }

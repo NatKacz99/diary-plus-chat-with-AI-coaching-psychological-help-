@@ -47,3 +47,20 @@ export async function deleteNote(req, res) {
     res.status(500).json({ success: false, message: 'Server error' });
   }
 }
+
+export async function updateNote(req, res) {
+  const { noteId, title, content, userId } = req.body;
+
+  try {
+    if (title) {
+      await db.query('UPDATE notes SET title = ($1) WHERE id = ($2)', [title, noteId])
+    }
+    if (content) {
+      await db.query('UPDATE notes SET content = ($1) WHERE id = ($2)', [content, noteId])
+    }
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+}

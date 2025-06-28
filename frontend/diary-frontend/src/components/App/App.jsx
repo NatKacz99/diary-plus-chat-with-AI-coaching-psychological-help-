@@ -5,12 +5,14 @@ import Note from "./../Note/Note";
 import CreateArea from "./../CreateArea/CreateArea";
 import SignUp from "./../SignUp/SignUp";
 import SignIn from "./../SignIn/SignIn";
+import EditNote from "./../EditNote/EditNote";
 import { Route, Routes } from 'react-router-dom';
 import { UserContext } from "../../contexts/UserContext";
 
 function App() {
   const { user } = useContext(UserContext);
   const [notes, setNotes] = useState([]);
+  const [editingNote, setEditingNote] = useState(null);
 
   const handleNoteAdded = (newNoteFromServer) => {
     setNotes(prev => [newNoteFromServer, ...prev]);
@@ -54,7 +56,7 @@ function App() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        noteId: noteToDelete.id, 
+        noteId: noteToDelete.id,
         userId: user.id
       })
     })
@@ -71,6 +73,43 @@ function App() {
       });
   }
 
+  function editNote(id) {
+    const noteToEdit = notes[id]; 
+    console.log("Editing note:", noteToEdit);
+    setEditingNote(noteToEdit);
+  }
+
+  function updateNote(updatedNote) {
+    fetch("http://localhost:3000/updateNote", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        noteId: updatedNote.id,
+        title: updatedNote.title,
+        content: updatedNote.content,
+        userId: user.id
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setNotes(prevNotes =>
+            prevNotes.map(note =>
+              note.id === updatedNote.id ? updatedNote : note
+            )
+          );
+          setEditingNote(null);
+        } else {
+          console.error("Error updating note:", data.message);
+        }
+      })
+      .catch(err => {
+        console.error("Error updating note:", err);
+      });
+  }
+
   return (
     <div>
       <Header />
@@ -81,15 +120,24 @@ function App() {
           element={
             <>
               <CreateArea onNoteAdded={handleNoteAdded} />
-              {notes.map((noteItem, index) => (
-                <Note
-                  key={index}
-                  id={index}
-                  title={noteItem.title}
-                  content={noteItem.content}
-                  onDelete={deleteNote}
+
+              {editingNote ? (
+                <EditNote
+                  note={editingNote}
+                  onSubmit={updateNote}
                 />
-              ))}
+              ) : (
+                notes.map((noteItem, index) => (
+                  <Note
+                    key={index}
+                    id={index}
+                    title={noteItem.title}
+                    content={noteItem.content}
+                    onDelete={deleteNote}
+                    onEdit={editNote}
+                  />
+                ))
+              )}
             </>
           }
         />
