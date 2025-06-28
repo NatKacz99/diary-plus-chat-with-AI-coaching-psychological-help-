@@ -26,6 +26,10 @@ export async function signup(req, res) {
       return res.status(400).json({ success: false, message: 'Passwords are not the same.' });
     }
 
+    if(password.length < 8){
+      return res.status(400).json({ success: false, message: `The password must consist of at least 8 characters`});
+    }
+
     const checkResultUsername = await db.query("SELECT * FROM users WHERE username = $1", [
       username
     ]);
