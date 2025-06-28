@@ -6,6 +6,7 @@ import "./SignIn.css"
 
 function SignIn({setToken}) {
   const { user, setUser } = useContext(UserContext);
+  const { loginUser } = useContext(UserContext);
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
   const [message, setMessage] = useState('');
@@ -24,13 +25,7 @@ function SignIn({setToken}) {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        localStorage.removeItem("userData");
-        localStorage.setItem('userData', JSON.stringify({
-          id: data.user.id,
-          username: data.user.name,
-          email: data.user.email,
-          token: data.token
-        }));
+        loginUser(data.user); 
         setUser(data.user);
         navigate("/");
       } else {
