@@ -6,6 +6,9 @@ import CreateArea from "./../CreateArea/CreateArea";
 import SignUp from "./../SignUp/SignUp";
 import SignIn from "./../SignIn/SignIn";
 import EditNote from "./../EditNote/EditNote";
+import ChatbotIcon from "./../Chatbot/ChatbotIcon";
+import ChatForm from "./../Chatbot/ChatForm";
+import "./../Chatbot/Chatbot.css";
 import { Route, Routes } from 'react-router-dom';
 import { UserContext } from "../../contexts/UserContext";
 
@@ -74,7 +77,7 @@ function App() {
   }
 
   function editNote(id) {
-    const noteToEdit = notes[id]; 
+    const noteToEdit = notes[id];
     console.log("Editing note:", noteToEdit);
     setEditingNote(noteToEdit);
   }
@@ -145,6 +148,33 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
       </Routes>
 
+      <div className="chatbot-popup">
+        <div className="chat-header">
+          <div className="header-info">
+            <ChatbotIcon />
+            <h2 className="logo-text">Chatbot</h2>
+          </div>
+          <button className="material-symbols-rounded">keyboard_arrow_down</button>
+        </div>
+        <div className="chat-body">
+          <div className="message bot-message">
+            <ChatbotIcon />
+            <p className="message-text">
+              Hey there 👋 <br />
+              How can I help you today?
+            </p>
+          </div>
+          <div className="message user-message">
+            <p className="message-text">
+              bla bla
+            </p>
+          </div>
+        </div>
+
+        <div className="chat-footer">
+          <ChatForm />
+        </div>
+      </div>
       <Footer />
     </div>
   );
