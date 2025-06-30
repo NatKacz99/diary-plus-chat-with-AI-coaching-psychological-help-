@@ -8,6 +8,7 @@ import SignIn from "./../SignIn/SignIn";
 import EditNote from "./../EditNote/EditNote";
 import ChatbotIcon from "./../Chatbot/ChatbotIcon";
 import ChatForm from "./../Chatbot/ChatForm";
+import ChatMessage from "./../Chatbot/ChatMessage";
 import "./../Chatbot/Chatbot.css";
 import { Route, Routes } from 'react-router-dom';
 import { UserContext } from "../../contexts/UserContext";
@@ -16,6 +17,7 @@ function App() {
   const { user } = useContext(UserContext);
   const [notes, setNotes] = useState([]);
   const [editingNote, setEditingNote] = useState(null);
+  const [chatHistory, setChatHistory] = useState([]);
 
   const handleNoteAdded = (newNoteFromServer) => {
     setNotes(prev => [newNoteFromServer, ...prev]);
@@ -113,6 +115,10 @@ function App() {
       });
   }
 
+  const generateBotResponse = (history) => {
+    console.log(history)
+  }
+
   return (
     <div>
       <Header />
@@ -164,15 +170,14 @@ function App() {
               How can I help you today?
             </p>
           </div>
-          <div className="message user-message">
-            <p className="message-text">
-              bla bla
-            </p>
-          </div>
+
+          {chatHistory.map((chat, index) => (
+            <ChatMessage key={index} chat={chat} />
+          ))}
         </div>
 
         <div className="chat-footer">
-          <ChatForm />
+          <ChatForm chatHistory={chatHistory} setChatHistory={setChatHistory} generateBotResponse={generateBotResponse}/>
         </div>
       </div>
       <Footer />

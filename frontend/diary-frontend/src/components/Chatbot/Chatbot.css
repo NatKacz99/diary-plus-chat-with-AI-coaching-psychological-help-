@@ -68,7 +68,9 @@
   height: 460px;
   overflow-y: auto;
   padding: 25px 22px;
-  margin-bottom: 82px
+  margin-bottom: 82px;
+  scrollbar-width: thin;
+  scrollbar-color: #DDD3F9 transparent;
 }
 
 .chat-body .message{
