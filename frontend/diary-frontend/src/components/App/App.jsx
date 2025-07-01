@@ -1,14 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import Header from "./../Header/Header";
 import Footer from "./../Footer/Footer";
-import Note from "./../Note/Note";
+import NoteWithChat from "./../Chatbot/NoteWithChatbot";
 import CreateArea from "./../CreateArea/CreateArea";
 import SignUp from "./../SignUp/SignUp";
 import SignIn from "./../SignIn/SignIn";
 import EditNote from "./../EditNote/EditNote";
-import ChatbotIcon from "./../Chatbot/ChatbotIcon";
-import ChatForm from "./../Chatbot/ChatForm";
-import ChatMessage from "./../Chatbot/ChatMessage";
 import "./../Chatbot/Chatbot.css";
 import { Route, Routes } from 'react-router-dom';
 import { UserContext } from "../../contexts/UserContext";
@@ -17,7 +14,8 @@ function App() {
   const { user } = useContext(UserContext);
   const [notes, setNotes] = useState([]);
   const [editingNote, setEditingNote] = useState(null);
-  const [chatHistory, setChatHistory] = useState([]);
+  const [chatHistories, setChatHistories] = useState({});
+  const chatBodyRef = useRef();
 
   const handleNoteAdded = (newNoteFromServer) => {
     setNotes(prev => [newNoteFromServer, ...prev]);
@@ -115,9 +113,49 @@ function App() {
       });
   }
 
-  const generateBotResponse = (history) => {
-    console.log(history)
+  const generateBotResponse = async (noteId, history) => {
+  const updateHistory = (text) => {
+    updateChatHistory(noteId, [
+      ...history.filter(msg => msg.text !== "Thinking..."),
+      { role: "model", text }
+    ]);
+  };
+
+  const formattedHistory = history.map(({ role, text }) => ({
+    role,
+    parts: [{ text }]
+  }));
+
+  try {
+    const response = await fetch(import.meta.env.VITE_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contents: formattedHistory })
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error.message || "Something went wrong!");
+
+    const apiText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1").trim();
+    updateHistory(apiText);
+  } catch (error) {
+    console.log(error);
   }
+};
+
+  useEffect(() => {
+    chatBodyRef.current.scrollTo({ top: chatBodyRef.current.scrollHeight, behaviour: "smooth" })
+  }, [chatHistories])
+
+  const getChatHistory = (noteId) => chatHistories[noteId] || [];
+
+  const updateChatHistory = (noteId, newHistory) => {
+    setChatHistories(prev => ({
+      ...prev,
+      [noteId]: newHistory
+    }));
+  };
+
 
   return (
     <div>
@@ -137,13 +175,14 @@ function App() {
                 />
               ) : (
                 notes.map((noteItem, index) => (
-                  <Note
+                  <NoteWithChat
                     key={index}
                     id={index}
                     title={noteItem.title}
                     content={noteItem.content}
                     onDelete={deleteNote}
                     onEdit={editNote}
+                    generateBotResponse={generateBotResponse}
                   />
                 ))
               )}
@@ -153,33 +192,6 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
       </Routes>
-
-      <div className="chatbot-popup">
-        <div className="chat-header">
-          <div className="header-info">
-            <ChatbotIcon />
-            <h2 className="logo-text">Chatbot</h2>
-          </div>
-          <button className="material-symbols-rounded">keyboard_arrow_down</button>
-        </div>
-        <div className="chat-body">
-          <div className="message bot-message">
-            <ChatbotIcon />
-            <p className="message-text">
-              Hey there 👋 <br />
-              How can I help you today?
-            </p>
-          </div>
-
-          {chatHistory.map((chat, index) => (
-            <ChatMessage key={index} chat={chat} />
-          ))}
-        </div>
-
-        <div className="chat-footer">
-          <ChatForm chatHistory={chatHistory} setChatHistory={setChatHistory} generateBotResponse={generateBotResponse}/>
-        </div>
-      </div>
       <Footer />
     </div>
   );
