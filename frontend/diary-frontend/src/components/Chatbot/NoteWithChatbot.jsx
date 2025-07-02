@@ -3,6 +3,7 @@ import Note from "./../Note/Note";
 import ChatbotIcon from "./ChatbotIcon";
 import ChatForm from "./ChatForm";
 import ChatMessage from "./ChatMessage";
+import "./Chatbot.css"
 
 function NoteWithChatbot({ id, title, content, onDelete, onEdit, generateBotResponse }) {
   const [chatHistory, setChatHistory] = useState([]);
@@ -14,10 +15,25 @@ function NoteWithChatbot({ id, title, content, onDelete, onEdit, generateBotResp
     }
   }, [chatHistory]);
 
-  return (
-    <>
-      <Note id={id} title={title} content={content} onDelete={onDelete} onEdit={onEdit} />
+  const handleGenerateBotResponse = async (history) => {
+    try {
+      const botResponse = await generateBotResponse(history);
 
+      setChatHistory(prev =>
+        prev.filter(msg => msg.text !== "Thinking...")
+          .concat([{ role: "model", text: botResponse }])
+      );
+    } catch (error) {
+      setChatHistory(prev =>
+        prev.filter(msg => msg.text !== "Thinking...")
+          .concat([{ role: "model", text: "Sorry, something went wrong. Please try again." }])
+      );
+    }
+  };
+
+  return (
+    <div class="note-with-chat-container">
+      <Note id={id} title={title} content={content} onDelete={onDelete} onEdit={onEdit} />
       <div className="chatbot-popup">
         <div className="chat-header">
           <div className="header-info">
@@ -45,12 +61,11 @@ function NoteWithChatbot({ id, title, content, onDelete, onEdit, generateBotResp
           <ChatForm
             chatHistory={chatHistory}
             setChatHistory={setChatHistory}
-            generateBotResponse={generateBotResponse}
+            generateBotResponse={handleGenerateBotResponse}
           />
         </div>
       </div>
-    </>
+    </div>
   );
 }
-
 export default NoteWithChatbot;

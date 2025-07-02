@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Header from "./../Header/Header";
 import Footer from "./../Footer/Footer";
-import NoteWithChat from "./../Chatbot/NoteWithChatbot";
+import NoteWithChatbot from "./../Chatbot/NoteWithChatbot";
 import CreateArea from "./../CreateArea/CreateArea";
 import SignUp from "./../SignUp/SignUp";
 import SignIn from "./../SignIn/SignIn";
@@ -15,7 +15,6 @@ function App() {
   const [notes, setNotes] = useState([]);
   const [editingNote, setEditingNote] = useState(null);
   const [chatHistories, setChatHistories] = useState({});
-  const chatBodyRef = useRef();
 
   const handleNoteAdded = (newNoteFromServer) => {
     setNotes(prev => [newNoteFromServer, ...prev]);
@@ -113,39 +112,33 @@ function App() {
       });
   }
 
-  const generateBotResponse = async (noteId, history) => {
-  const updateHistory = (text) => {
-    updateChatHistory(noteId, [
-      ...history.filter(msg => msg.text !== "Thinking..."),
-      { role: "model", text }
-    ]);
-  };
-
-  const formattedHistory = history.map(({ role, text }) => ({
-    role,
-    parts: [{ text }]
-  }));
-
-  try {
-    const response = await fetch(import.meta.env.VITE_API_URL, {
+  const generateBotResponse = async (history) => {
+    const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ contents: formattedHistory })
-    });
+      body: JSON.stringify({
+        contents: history.map(({ role, text }) => ({
+          role: role === 'user' ? 'user' : 'model',
+          parts: [{ text }]
+        }))
+      })
+    };
 
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error.message || "Something went wrong!");
+    try {
+      const response = await fetch(import.meta.env.VITE_API_URL, requestOptions);
+      const data = await response.json();
 
-    const apiText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1").trim();
-    updateHistory(apiText);
-  } catch (error) {
-    console.log(error);
-  }
-};
+      if (!response.ok) {
+        throw new Error(data.error?.message || "Something went wrong!");
+      }
 
-  useEffect(() => {
-    chatBodyRef.current.scrollTo({ top: chatBodyRef.current.scrollHeight, behaviour: "smooth" })
-  }, [chatHistories])
+      const apiText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1").trim();
+      return apiText
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
 
   const getChatHistory = (noteId) => chatHistories[noteId] || [];
 
@@ -174,17 +167,19 @@ function App() {
                   onSubmit={updateNote}
                 />
               ) : (
-                notes.map((noteItem, index) => (
-                  <NoteWithChat
-                    key={index}
-                    id={index}
-                    title={noteItem.title}
-                    content={noteItem.content}
-                    onDelete={deleteNote}
-                    onEdit={editNote}
-                    generateBotResponse={generateBotResponse}
-                  />
-                ))
+                <div className="notes-container"> 
+                  {notes.map((noteItem, index) => (
+                    <NoteWithChatbot
+                      key={noteItem.id}
+                      id={noteItem.id}
+                      title={noteItem.title}
+                      content={noteItem.content}
+                      onDelete={deleteNote}
+                      onEdit={editNote}
+                      generateBotResponse={generateBotResponse}
+                    />
+                  ))}
+                </div>
               )}
             </>
           }

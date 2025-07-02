@@ -45,8 +45,8 @@ footer p {
   box-shadow: 0 2px 5px #ccc;
   padding: 10px;
   width: 240px;
-  margin: 16px;
   float: left;
+  flex-shrink: 0;
 }
 
 .note h1 {
@@ -105,3 +105,4 @@ form.create-note button {
   cursor: pointer;
   outline: none;
 }
+

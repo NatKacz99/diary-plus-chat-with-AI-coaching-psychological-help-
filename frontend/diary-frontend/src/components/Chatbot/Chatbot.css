@@ -1,24 +1,47 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Yellowtail&display=swap');
 
+.notes-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-width: 1400px; 
+  margin: 0 auto;
+}
+
+.note-with-chat-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  min-height: 0;
+  align-items: center;
+}
+
 .chatbot-popup {
-  position: relative;
-  font-family: "Inter" sans-serif;
+  position: relative; 
+  font-family: "Inter", sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   background-color: #fff;
   overflow: hidden;
-  width: 420px;
+  width: 100%;
   border-radius: 15px;
-  box-shadow: 0 0 128px 0 rgba(0, 0, 0, 0.1), 0 32px 64px -48px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 20px rgba(109, 79, 194, 0.15);
+  border: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column; 
+  height: 450px;
 }
 
-.chatbot-popup .chat-header{
+.chatbot-popup .chat-header {
   display: flex;
   align-items: center;
   padding: 15px 22px;
   justify-content: space-between;
   background: #6D4FC2;
+  flex-shrink: 0; 
 }
 
 .chat-header .header-info{
@@ -64,11 +87,10 @@
 .chat-body{
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  height: 460px;
+  gap: 15px;
   overflow-y: auto;
-  padding: 25px 22px;
-  margin-bottom: 82px;
+  padding: 15px;
+  flex: 1;
   scrollbar-width: thin;
   scrollbar-color: #DDD3F9 transparent;
 }
@@ -116,7 +138,7 @@
 }
 
 .chat-footer{
-  position: absolute;
+  position: relative;
   bottom: 0;
   width: 100%;
   background: #fff;
@@ -125,15 +147,17 @@
 }
 
 .chat-footer .chat-form{
+  position: relative;
   display: flex;
   align-items: center;
   background: #fff;
   border-radius: 32px;
-  outline: 1px solid #CCCCE5
+  outline: 1px solid #CCCCE5;
+  flex-shrink: 0;
 }
 
 .chat-footer .chat-form:focus-within{
-  outline: 2px soild #6D4FC2
+  outline: 2px solid #6D4FC2
 }
 
 .chat-form .message-input{
