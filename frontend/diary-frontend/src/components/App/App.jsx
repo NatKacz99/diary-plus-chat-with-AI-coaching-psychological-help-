@@ -49,8 +49,14 @@ function App() {
     fetchNotes();
   }, [user]);
 
-  function deleteNote(id) {
-    const noteToDelete = notes[id];
+
+  function deleteNote(noteId) {
+    const noteToDelete = notes.find(note => note.id === noteId);
+
+    if (!noteToDelete) {
+      console.error("Note not found with ID:", noteId);
+      return;
+    }
 
     fetch("http://localhost:3000/deleteNote", {
       method: "DELETE",
@@ -65,9 +71,9 @@ function App() {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          setNotes(prevNotes => prevNotes.filter((noteItem, index) => id !== index));
+          setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId));
         } else {
-          console.error("The note wasn't delete:", data.message);
+          console.error("The note wasn't deleted:", data.message);
         }
       })
       .catch(err => {
@@ -75,8 +81,14 @@ function App() {
       });
   }
 
-  function editNote(id) {
-    const noteToEdit = notes[id];
+  function editNote(noteId) {
+    const noteToEdit = notes.find(note => note.id === noteId);
+
+    if (!noteToEdit) {
+      console.error("Note not found with ID:", noteId);
+      return;
+    }
+
     console.log("Editing note:", noteToEdit);
     setEditingNote(noteToEdit);
   }
@@ -112,6 +124,13 @@ function App() {
       });
   }
 
+  const updateChatHistory = (noteId, newHistory) => {
+    setChatHistories(prev => ({
+      ...prev,
+      [noteId]: newHistory
+    }));
+  };
+
   const generateBotResponse = async (history) => {
     const requestOptions = {
       method: "POST",
@@ -140,53 +159,46 @@ function App() {
     }
   };
 
-  const getChatHistory = (noteId) => chatHistories[noteId] || [];
-
-  const updateChatHistory = (noteId, newHistory) => {
-    setChatHistories(prev => ({
-      ...prev,
-      [noteId]: newHistory
-    }));
-  };
-
 
   return (
-    <div>
+    <div className="wrapper">
       <Header />
 
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <CreateArea onNoteAdded={handleNoteAdded} />
+      <main className='main-content'>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <CreateArea onNoteAdded={handleNoteAdded} />
 
-              {editingNote ? (
-                <EditNote
-                  note={editingNote}
-                  onSubmit={updateNote}
-                />
-              ) : (
-                <div className="notes-container"> 
-                  {notes.map((noteItem, index) => (
-                    <NoteWithChatbot
-                      key={noteItem.id}
-                      id={noteItem.id}
-                      title={noteItem.title}
-                      content={noteItem.content}
-                      onDelete={deleteNote}
-                      onEdit={editNote}
-                      generateBotResponse={generateBotResponse}
-                    />
-                  ))}
-                </div>
-              )}
-            </>
-          }
-        />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/signin" element={<SignIn />} />
-      </Routes>
+                {editingNote ? (
+                  <EditNote
+                    note={editingNote}
+                    onSubmit={updateNote}
+                  />
+                ) : (
+                  <div className="notes-container">
+                    {notes.map((noteItem, index) => (
+                      <NoteWithChatbot
+                        key={noteItem.id}
+                        id={noteItem.id}
+                        title={noteItem.title}
+                        content={noteItem.content}
+                        onDelete={deleteNote}
+                        onEdit={editNote}
+                        generateBotResponse={generateBotResponse}
+                      />
+                    ))}
+                  </div>
+                )}
+              </>
+            }
+          />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/signin" element={<SignIn />} />
+        </Routes>
+      </main>
       <Footer />
     </div>
   );
