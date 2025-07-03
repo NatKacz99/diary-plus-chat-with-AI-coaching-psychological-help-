@@ -3,10 +3,15 @@ import Note from "./../Note/Note";
 import ChatbotIcon from "./ChatbotIcon";
 import ChatForm from "./ChatForm";
 import ChatMessage from "./ChatMessage";
+import {userNotesInformation} from "./../../userNotesInformationForChatbot";
 import "./Chatbot.css"
 
 function NoteWithChatbot({ id, title, content, onDelete, onEdit, generateBotResponse }) {
-  const [chatHistory, setChatHistory] = useState([]);
+  const [chatHistory, setChatHistory] = useState([{
+    hideInChat: true,
+    role: 'model',
+    text: userNotesInformation
+  }]);
   const [showChatbot, setShowChatbot] = useState(false);
   const chatBodyRef = useRef();
 
