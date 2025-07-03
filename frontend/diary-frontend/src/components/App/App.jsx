@@ -175,9 +175,7 @@ function App() {
             path="/"
             element={
               <>
-              <UserInitialWelcome />
-
-                {user && <CreateArea onNoteAdded={handleNoteAdded} />}
+                {user ? (<CreateArea onNoteAdded={handleNoteAdded} />) : (<UserInitialWelcome />)}
 
                 {editingNote ? (
                   <EditNote

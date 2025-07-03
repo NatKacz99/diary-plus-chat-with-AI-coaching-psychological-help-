@@ -1,0 +1,9 @@
+.user-initial-welcome {
+  background: linear-gradient(135deg, #fff9d6, #fff1b8);
+  border-radius: 15px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  margin: 10px auto;
+  padding: 40px 20px;
+  max-width: 600px;
+}
