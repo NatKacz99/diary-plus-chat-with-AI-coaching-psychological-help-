@@ -23,7 +23,10 @@ function App() {
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        if (!user || !user.id) return;
+        if (!user || !user.id) {
+          setNotes([]);
+          return;
+        }
 
         const response = await fetch(`http://localhost:3000/displayUserNotes?userId=${user.id}`, {
           method: "GET",
@@ -38,6 +41,7 @@ function App() {
         if (data.success) {
           setNotes(data.notes);
         } else {
+          setNotes([]);
           console.error("Retriving notes error: ", data.message);
         }
 
