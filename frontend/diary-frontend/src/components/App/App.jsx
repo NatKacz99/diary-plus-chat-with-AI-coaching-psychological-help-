@@ -6,6 +6,7 @@ import CreateArea from "./../CreateArea/CreateArea";
 import SignUp from "./../SignUp/SignUp";
 import SignIn from "./../SignIn/SignIn";
 import EditNote from "./../EditNote/EditNote";
+import UserInitialWelcome from "./../UserWelcome/UserInitialWelcome";
 import "./../Chatbot/Chatbot.css";
 import { Route, Routes } from 'react-router-dom';
 import { UserContext } from "../../contexts/UserContext";
@@ -174,7 +175,9 @@ function App() {
             path="/"
             element={
               <>
-                <CreateArea onNoteAdded={handleNoteAdded} />
+              <UserInitialWelcome />
+
+                {user && <CreateArea onNoteAdded={handleNoteAdded} />}
 
                 {editingNote ? (
                   <EditNote
