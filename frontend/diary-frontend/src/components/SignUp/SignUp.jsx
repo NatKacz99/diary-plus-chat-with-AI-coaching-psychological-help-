@@ -73,7 +73,7 @@ function SignUp() {
       {message && messageType === 'success' && (
         <>
           <p className="alert-success">{message}</p> <br />
-          <p className="alert-success">You can now <Link to="/login">sign in to your account</Link>.</p>
+          <p className="alert-success">You can now <Link to="/signin">sign in to your account</Link>.</p>
         </>
       )}
 

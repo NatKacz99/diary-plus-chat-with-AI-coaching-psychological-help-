@@ -4,8 +4,14 @@ import EditIcon from '@mui/icons-material/Edit';
 
 function Note(props) {
   function handleClickDelete() {
-    props.onDelete(props.id);
-  }
+  console.log("=== NOTE COMPONENT DEBUG ===");
+  console.log("props:", props);
+  console.log("props.id:", props.id);
+  console.log("typeof props.id:", typeof props.id);
+  console.log("===========================");
+  
+  props.onDelete(props.id);
+}
 
   function handleClickEdit(){
     props.onEdit(props.id)

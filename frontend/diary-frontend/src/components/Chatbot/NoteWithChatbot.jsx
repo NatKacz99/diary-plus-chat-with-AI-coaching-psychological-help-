@@ -40,7 +40,7 @@ function NoteWithChatbot({ id, title, content, onDelete, onEdit, generateBotResp
   return (
     <>
       <div className="note-with-chat-container">
-        <Note id={id} key={id} title={title} content={content} onDelete={onDelete} onEdit={onEdit} />
+        <Note id={id} title={title} content={content} onDelete={onDelete} onEdit={onEdit} />
         <button onClick={() => setShowChatbot(prev => !prev)} id="chatbotToggler">
           <span className="material-symbols-rounded">
             {showChatbot ? 'close' : 'mode_comment'}

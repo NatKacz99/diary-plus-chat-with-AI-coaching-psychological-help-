@@ -40,6 +40,11 @@ function App() {
         const data = await response.json();
 
         if (data.success) {
+          console.log("Fetched notes from server:", data.notes); // ← DODAJ TO
+          // Sprawdź czy każda notatka ma ID
+          data.notes.forEach(note => {
+            console.log(`Note ID: ${note.id}, Title: ${note.title}`); // ← DODAJ TO
+          });
           setNotes(data.notes);
         } else {
           setNotes([]);
@@ -56,38 +61,60 @@ function App() {
 
 
   function deleteNote(noteId) {
+    console.log("=== DELETE FUNCTION DEBUG ===");
+    console.log("Received noteId:", noteId);
+    console.log("typeof noteId:", typeof noteId);
+    console.log("All notes:", notes);
+    console.log("Notes IDs:", notes.map(n => n.id));
+    console.log("============================");
+
     const noteToDelete = notes.find(note => note.id === noteId);
 
     if (!noteToDelete) {
       console.error("Note not found with ID:", noteId);
+      console.error("Available notes:", notes);
       return;
     }
+
+    console.log("Deleting note with ID:", noteId); // Debug
 
     fetch("http://localhost:3000/deleteNote", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include", // ← WAŻNE! Dla sesji
       body: JSON.stringify({
         noteId: noteToDelete.id,
         userId: user.id
       })
     })
-      .then(res => res.json())
+      .then(res => {
+        console.log("Response status:", res.status); // Debug
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then(data => {
+        console.log("Server response:", data); // Debug
         if (data.success) {
+          // DOPIERO TERAZ usuwamy z UI po potwierdzeniu serwera
           setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId));
         } else {
           console.error("The note wasn't deleted:", data.message);
+          alert("Błąd: " + data.message); // Pokaż błąd użytkownikowi
         }
       })
       .catch(err => {
         console.error("Server error:", err);
+        alert("Błąd serwera: " + err.message); // Pokaż błąd użytkownikowi
       });
   }
 
   function editNote(noteId) {
-    const noteToEdit = notes.find(note => note.id === noteId);
+    const numericNoteId = parseInt(noteId, 10);
+    const noteToEdit = notes.find(note => note.id === numericNoteId);
 
     if (!noteToEdit) {
       console.error("Note not found with ID:", noteId);
@@ -184,17 +211,32 @@ function App() {
                   />
                 ) : (
                   <div className="notes-container">
-                    {notes.map((noteItem, index) => (
-                      <NoteWithChatbot
-                        key={noteItem.id}
-                        id={noteItem.id}
-                        title={noteItem.title}
-                        content={noteItem.content}
-                        onDelete={deleteNote}
-                        onEdit={editNote}
-                        generateBotResponse={generateBotResponse}
-                      />
-                    ))}
+                    {notes.map((noteItem, index) => {
+                      // DEBUGOWANIE - sprawdź co zawiera noteItem
+                      console.log("=== DEBUG NOTA ===");
+                      console.log("Index:", index);
+                      console.log("Cały obiekt noteItem:", noteItem);
+                      console.log("noteItem.id:", noteItem.id);
+                      console.log("typeof noteItem.id:", typeof noteItem.id);
+                      console.log("Object.keys(noteItem):", Object.keys(noteItem));
+                      console.log("Wszystkie wartości:");
+                      Object.keys(noteItem).forEach(key => {
+                        console.log(`  ${key}:`, noteItem[key]);
+                      });
+                      console.log("=================");
+
+                      return (
+                        <NoteWithChatbot
+                          key={noteItem.id || index} // fallback na index jeśli brak id
+                          id={noteItem.id}
+                          title={noteItem.title}
+                          content={noteItem.content}
+                          onDelete={deleteNote}
+                          onEdit={editNote}
+                          generateBotResponse={generateBotResponse}
+                        />
+                      );
+                    })}
                   </div>
                 )}
               </>

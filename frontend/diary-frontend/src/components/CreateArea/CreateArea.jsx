@@ -52,7 +52,7 @@ function CreateArea(props) {
       setNote({ title: "", content: "" });
 
       if (props.onNoteAdded) {
-        props.onNoteAdded(data.note || newNote);
+        props.onNoteAdded(data.newNote);
       }
     } else {
       console.error("Adding note error: ", data.message);
